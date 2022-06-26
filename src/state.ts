@@ -57,15 +57,17 @@ let sourceFile = program.getSourceFile("/t.py")!;
 export interface AppState {
   code: string;
   ast: ParseNode;
-  selectedNode?: ParseNode;
+  selectedNode: ParseNode;
   program: Program;
 }
 
 export function useAppState() {
   const [state, setState] = useState<AppState>(() => ({
     code: defaultCode,
-    ast: sourceFile["_parseResults"].parseTree,
-    selectedNode: undefined,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    ast: sourceFile.getParseResults()!.parseTree,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    selectedNode: sourceFile.getParseResults()!.parseTree,
     program,
   }));
 
@@ -103,7 +105,7 @@ export function useAppState() {
       setState((x) => {
         const ast = x.ast;
         const node = findNodeByOffset(ast, offset);
-        return { ...x, selectedNode: node };
+        return { ...x, selectedNode: node || ast };
       });
     },
   };

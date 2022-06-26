@@ -6,7 +6,7 @@ import { AppState } from "../state";
 export default function TreeViewer() {
   const { state, selectNode } = AppState.useContainer();
 
-  return <div>{renderNode(state.ast)}</div>;
+  return <div className="verticalContainer">{renderNode(state.ast)}</div>;
 
   function renderNode(node: ParseNode) {
     const children = new ParseTreeWalker().visitNode(node);

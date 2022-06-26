@@ -59,3 +59,8 @@
 .selectedNode {
   color: blue;
 }
+
+.verticalContainer {
+  height: 100%;
+  overflow: auto;
+}
