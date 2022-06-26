@@ -11,6 +11,7 @@ import * as path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => ({
+  base: "/pyright-ast-viewer/",
   server: {
     port: 8000,
   },
