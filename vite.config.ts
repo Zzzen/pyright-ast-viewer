@@ -6,9 +6,11 @@ import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfil
 import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfill";
 // You don't need to add this to deps, it's included by @esbuild-plugins/node-modules-polyfill
 import rollupNodePolyFill from "rollup-plugin-node-polyfills";
+import replace from "@rollup/plugin-replace";
+import * as path from "path";
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   server: {
     port: 8000,
   },
@@ -18,6 +20,12 @@ export default defineConfig({
       // see https://github.com/remorses/esbuild-plugins/blob/master/node-modules-polyfill/src/polyfills.ts
       // process and buffer are excluded because already managed
       // by node-globals-polyfill
+      ...(command === "build"
+        ? {
+            process: path.resolve("./polyfills/process-es6.js"),
+            buffer: "rollup-plugin-node-polyfills/polyfills/buffer-es6",
+          }
+        : {}),
       util: "rollup-plugin-node-polyfills/polyfills/util",
       sys: "util",
       events: "rollup-plugin-node-polyfills/polyfills/events",
@@ -70,6 +78,11 @@ export default defineConfig({
   build: {
     rollupOptions: {
       plugins: [
+        replace({
+          "process.execArgv": "[]",
+          "global": "globalThis",
+          preventAssignment: true,
+        }),
         // Enable rollup polyfills plugin
         // used during production bundling
         rollupNodePolyFill(),
@@ -77,4 +90,4 @@ export default defineConfig({
     },
   },
   plugins: [react()],
-});
+}));
