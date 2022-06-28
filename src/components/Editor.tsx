@@ -5,13 +5,14 @@ import { AppState } from "../state";
 import { monaco } from "react-monaco-editor";
 
 function EditorWrapper() {
-  const { state, handleCodeChange, handleCursorChange } =
+  const { state, handleCodeChange, handleCursorChange, handleEditorInit } =
     AppState.useContainer();
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
   function handleEditorDidMount(editor: monaco.editor.IStandaloneCodeEditor) {
     editorRef.current = editor;
+    handleEditorInit(editor)
     editor.onMouseDown((e) => {
       if (!e.target.range) {
         return;

@@ -152,3 +152,5 @@ export enum TypeFlags {
   // This type is a special form like "UnionType".
   SpecialForm = 1 << 3,
 }
+
+export const typesheds = import.meta.glob('/node_modules/pyright/dist/typeshed-fallback/**/*.pyi', { as: 'raw' });
