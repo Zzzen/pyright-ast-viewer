@@ -153,4 +153,4 @@ export enum TypeFlags {
   SpecialForm = 1 << 3,
 }
 
-export const typesheds = import.meta.glob('/node_modules/pyright/dist/typeshed-fallback/**/*.pyi', { as: 'raw' });
+export const typesheds = import.meta.glob('/node_modules/pyright/dist/typeshed-fallback/stdlib/*.pyi', { as: 'raw' });
