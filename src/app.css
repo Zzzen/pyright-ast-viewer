@@ -67,6 +67,7 @@
 .verticalContainer {
   height: 100%;
   overflow: auto;
+  padding: 8px;
 }
 
 .editorRangeHighlight {
@@ -75,4 +76,5 @@
 
 .endNode {
   margin-left: 12px;
+  cursor: pointer;
 }
