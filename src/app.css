@@ -56,6 +56,10 @@
   cursor: pointer;
 }
 
+.nodeText {
+  display: inline-block;
+}
+
 .selectedNode {
   color: blue;
 }
@@ -66,5 +70,9 @@
 }
 
 .editorRangeHighlight {
-  background: #6f7163;
+  background: #d3d3d3;
+}
+
+.endNode {
+  margin-left: 12px;
 }

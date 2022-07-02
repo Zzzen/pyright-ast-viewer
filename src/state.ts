@@ -17,6 +17,8 @@ import {
 import { createContainer } from "unstated-next";
 import { monaco } from "react-monaco-editor";
 
+const FILE_PATH = "/t.py";
+
 const defaultCode = `
 def f(a = 1):
   return a
@@ -43,7 +45,7 @@ console.log(libraryRoot);
 const tfs = new TestFileSystem(false, {
   files: {
     ...typesheds,
-    "/t.py": defaultCode,
+    [FILE_PATH]: defaultCode,
   },
 });
 
@@ -59,7 +61,7 @@ const importResolver = new ImportResolver(
   new TestAccessHost(fs.getModulePath(), [libraryRoot])
 );
 const program = new Program(importResolver, configOptions);
-program.setTrackedFiles(["/t.py"]);
+program.setTrackedFiles([FILE_PATH]);
 
 while (program.analyze()) {
   // Continue to call analyze until it completes. Since we're not
@@ -67,7 +69,7 @@ while (program.analyze()) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-let sourceFile = program.getSourceFile("/t.py")!;
+let sourceFile = program.getSourceFile(FILE_PATH)!;
 
 export interface AppState {
   code: string;
@@ -114,7 +116,7 @@ export function useAppState() {
       highlightRange(undefined);
 
       tfs.apply({
-        "t.py": code,
+        [FILE_PATH]: code,
       });
 
       program.markAllFilesDirty(false);
@@ -125,7 +127,7 @@ export function useAppState() {
       }
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      sourceFile = program.getSourceFile("/t.py")!;
+      sourceFile = program.getSourceFile(FILE_PATH)!;
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const ast = sourceFile.getParseResults()!.parseTree;
@@ -146,7 +148,13 @@ export function useAppState() {
             .getModel()
             ?.getPositionAt(node.start + node.length);
           if (start && end) {
-            highlightRange(monaco.Range.fromPositions(start, end));
+            const range = monaco.Range.fromPositions(start, end);
+            highlightRange(range);
+            try {
+              editorRef.current.revealRangeInCenterIfOutsideViewport(range, monaco.editor.ScrollType.Smooth);
+            } catch {
+              // ignore, for some reason this was throwing
+            }
           }
         }
         return { ...x, selectedNode: node };

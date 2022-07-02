@@ -34,7 +34,7 @@ export default function PropertiesViewer() {
   const isExpr = isExpressionNode(selectedNode);
   const type =
     isExpr && state.program.evaluator?.getTypeOfExpression(selectedNode);
-  const decl = (selectedNode.nodeType as unknown as ParseNodeType) === ParseNodeType.Name ? state.program.evaluator?.getDeclarationsForNameNode(selectedNode) : undefined;
+  const decl = (selectedNode.nodeType as unknown as ParseNodeType) === ParseNodeType.Name && state.program.evaluator?.getDeclarationsForNameNode(selectedNode) || "[None]";
 
   return (
     <div className="verticalContainer">
