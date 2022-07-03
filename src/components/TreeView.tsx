@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import TreeView from "react-treeview";
-import { ParseNode, ParseTreeWalker, ParseNodeType } from "../compiler/api";
+import { ParseNode, ParseTreeWalker, ParseNodeType, printParseNodeType } from "../compiler/api";
 import { AppState } from "../state";
 
 export default function TreeViewer() {
@@ -32,6 +32,7 @@ export default function TreeViewer() {
 
     const nodeLabel = (
       <div
+        key={node.id}
         ref={node === state.selectedNode ? selectedNodeRef : undefined}
         className={
           (node === state.selectedNode ? " selectedNode " : "") +
@@ -39,7 +40,7 @@ export default function TreeViewer() {
         }
         onClick={() => selectNode(node)}
       >
-        {ParseNodeType[node.nodeType]}
+        {printParseNodeType(node.nodeType)}
       </div>
     );
 

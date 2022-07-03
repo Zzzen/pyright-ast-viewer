@@ -43,7 +43,7 @@
   "dependencies": {
     "@monaco-editor/react": "^4.4.5",
     "@rollup/plugin-replace": "^4.0.0",
-    "@zzzen/pyright-internal": "^1.1.255",
+    "@zzzen/pyright-internal": "^1.2.0-dev.20220703",
     "monaco-editor": "^0.33.0",
     "pyright": "^1.1.255",
     "react": "^18.2.0",

@@ -2,6 +2,7 @@ import { JSONTree } from "react-json-tree";
 import {
   isExpressionNode,
   ParseNodeType,
+  printParseNodeType,
   TypeCategory,
   TypeFlags,
 } from "../compiler/api";
@@ -34,7 +35,7 @@ export default function PropertiesViewer() {
   const isExpr = isExpressionNode(selectedNode);
   const type =
     isExpr && state.program.evaluator?.getTypeOfExpression(selectedNode);
-  const decl = (selectedNode.nodeType as unknown as ParseNodeType) === ParseNodeType.Name && state.program.evaluator?.getDeclarationsForNameNode(selectedNode) || "[None]";
+  const decl = (selectedNode.nodeType) === ParseNodeType.Name && state.program.evaluator?.getDeclarationsForNameNode(selectedNode) || "[None]";
 
   return (
     <div className="verticalContainer">
@@ -46,7 +47,7 @@ export default function PropertiesViewer() {
         hideRoot
         valueRenderer={(str, val, ...keypaths) => {
           if (keypaths[0] === "nodeType") {
-            return ParseNodeType[val];
+            return printParseNodeType(val);
           }
           return str;
         }}
@@ -59,7 +60,7 @@ export default function PropertiesViewer() {
         hideRoot
         valueRenderer={(str, val, ...keypaths) => {
           if (keypaths[0] === "nodeType") {
-            return ParseNodeType[val];
+            return printParseNodeType(val);
           }
           if (keypaths[0] === "category") {
             return TypeCategory[val];
@@ -99,7 +100,7 @@ export default function PropertiesViewer() {
         hideRoot
         valueRenderer={(str, val, ...keypaths) => {
           if (keypaths[0] === "nodeType") {
-            return ParseNodeType[val];
+            return printParseNodeType(val);
           }
           return str;
         }}
