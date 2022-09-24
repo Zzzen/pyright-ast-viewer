@@ -2,6 +2,7 @@ export { TestFileSystem } from "@zzzen/pyright-internal/dist/tests/harness/vfs/f
 export { TestAccessHost } from "@zzzen/pyright-internal/dist/tests/harness/testAccessHost";
 export { PyrightFileSystem } from "@zzzen/pyright-internal/dist/pyrightFileSystem";
 export { ConfigOptions } from "@zzzen/pyright-internal/dist/common/configOptions";
+export { Diagnostic, DiagnosticCategory } from "@zzzen/pyright-internal/dist/common/diagnostic";
 export {
   combinePaths,
   normalizeSlashes,

@@ -108,7 +108,6 @@ export default function PropertiesViewer() {
         data={decl}
         hideRoot
         valueRenderer={(str, val, ...keypaths) => {
-          console.log(str, val, keypaths);
           if (keypaths[0] === "type" && typeof keypaths[1] === "number" && keypaths[2] === '_declarations') {
             return val + '(' + DeclarationType[val] + ')';
           }

@@ -1,18 +1,53 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
-import Editor from "@monaco-editor/react";
+import Editor, { useMonaco } from "@monaco-editor/react";
+import {
+  type editor,
+  MarkerSeverity,
+} from "monaco-editor/esm/vs/editor/editor.api";
+
 import { AppState } from "../state";
-import { monaco } from "react-monaco-editor";
+import { DiagnosticCategory } from "../compiler/api";
+
+const DiagnosticCategoryMap: Record<DiagnosticCategory, MarkerSeverity> = {
+  [DiagnosticCategory.Error]: MarkerSeverity.Error,
+  [DiagnosticCategory.Warning]: MarkerSeverity.Warning,
+  [DiagnosticCategory.Information]: MarkerSeverity.Info,
+  [DiagnosticCategory.UnusedCode]: MarkerSeverity.Hint,
+  [DiagnosticCategory.Deprecated]: MarkerSeverity.Hint,
+};
 
 function EditorWrapper() {
   const { state, handleCodeChange, handleCursorChange, handleEditorInit } =
     AppState.useContainer();
+  const monaco = useMonaco();
 
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const { diagnostics } = state;
+  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 
-  function handleEditorDidMount(editor: monaco.editor.IStandaloneCodeEditor) {
+  useEffect(() => {
+    const textModel = editorRef.current?.getModel();
+    if (textModel && monaco) {
+      monaco.editor.setModelMarkers(
+        textModel,
+        "pyright",
+        diagnostics?.map((diag) => {
+          return {
+            startLineNumber: diag.range.start.line + 1,
+            startColumn: diag.range.start.character + 1,
+            endLineNumber: diag.range.end.line + 1,
+            endColumn: diag.range.end.character + 1,
+            message: diag.message,
+            severity: DiagnosticCategoryMap[diag.category],
+          };
+        }) || []
+      );
+    }
+  }, [diagnostics, monaco]);
+
+  function handleEditorDidMount(editor: editor.IStandaloneCodeEditor) {
     editorRef.current = editor;
-    handleEditorInit(editor)
+    handleEditorInit(editor);
     editor.onMouseDown((e) => {
       if (!e.target.range) {
         return;

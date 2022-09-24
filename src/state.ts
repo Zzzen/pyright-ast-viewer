@@ -13,9 +13,15 @@ import {
   ParseNode,
   findNodeByOffset,
   typesheds,
+  Diagnostic,
 } from "./compiler/api";
 import { createContainer } from "unstated-next";
-import { monaco } from "react-monaco-editor";
+
+import { useMonaco } from "@monaco-editor/react";
+import {
+  type editor,
+  type Range,
+} from "monaco-editor/esm/vs/editor/editor.api";
 
 const FILE_PATH = "/t.py";
 
@@ -34,7 +40,7 @@ class Foo:
     def from_baz(cls, baz: str) -> None:
         cls.str = baz
 
-foo = Foo()
+foo = Foo("")
 foo.str
 `;
 
@@ -76,6 +82,7 @@ export interface AppState {
   ast: ParseNode;
   selectedNode: ParseNode;
   program: Program;
+  diagnostics: Diagnostic[] | undefined;
 }
 
 export function useAppState() {
@@ -86,14 +93,15 @@ export function useAppState() {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     selectedNode: sourceFile.getParseResults()!.parseTree,
     program,
+    diagnostics: sourceFile.getDiagnostics(configOptions),
   }));
 
-  const prevDecRef = useRef<string[]>([]);
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | undefined>(
-    undefined
-  );
+  const monaco = useMonaco();
 
-  function highlightRange(range: monaco.Range | undefined) {
+  const prevDecRef = useRef<string[]>([]);
+  const editorRef = useRef<editor.IStandaloneCodeEditor | undefined>(undefined);
+
+  function highlightRange(range: Range | undefined) {
     if (!editorRef.current) {
       return;
     }
@@ -128,6 +136,7 @@ export function useAppState() {
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       sourceFile = program.getSourceFile(FILE_PATH)!;
+      const diagnostics = sourceFile.getDiagnostics(configOptions);
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const ast = sourceFile.getParseResults()!.parseTree;
@@ -138,6 +147,7 @@ export function useAppState() {
         ast: ast,
         selectedNode: ast,
         program,
+        diagnostics,
       }));
     },
     selectNode(node: ParseNode) {
@@ -147,11 +157,14 @@ export function useAppState() {
           const end = editorRef.current
             .getModel()
             ?.getPositionAt(node.start + node.length);
-          if (start && end) {
+          if (start && end && monaco) {
             const range = monaco.Range.fromPositions(start, end);
             highlightRange(range);
             try {
-              editorRef.current.revealRangeInCenterIfOutsideViewport(range, monaco.editor.ScrollType.Smooth);
+              editorRef.current.revealRangeInCenterIfOutsideViewport(
+                range,
+                monaco.editor.ScrollType.Smooth
+              );
             } catch {
               // ignore, for some reason this was throwing
             }
@@ -168,7 +181,7 @@ export function useAppState() {
         return { ...x, selectedNode: node || ast };
       });
     },
-    handleEditorInit(editor: monaco.editor.IStandaloneCodeEditor) {
+    handleEditorInit(editor: editor.IStandaloneCodeEditor) {
       editorRef.current = editor;
     },
   };
