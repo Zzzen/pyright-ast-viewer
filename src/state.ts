@@ -14,6 +14,7 @@ import {
   findNodeByOffset,
   typesheds,
   Diagnostic,
+  PythonVersion,
 } from "./compiler/api";
 import { createContainer } from "unstated-next";
 
@@ -61,6 +62,7 @@ const configOptions = new ConfigOptions(normalizeSlashes("/"));
 configOptions.typeshedPath = normalizeSlashes(
   "/node_modules/pyright/dist/typeshed-fallback"
 );
+configOptions.defaultPythonVersion = PythonVersion.V3_12
 const importResolver = new ImportResolver(
   fs,
   configOptions,
