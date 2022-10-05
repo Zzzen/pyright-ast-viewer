@@ -66,7 +66,7 @@ configOptions.defaultPythonVersion = PythonVersion.V3_12
 const importResolver = new ImportResolver(
   fs,
   configOptions,
-  new TestAccessHost(fs.getModulePath(), [libraryRoot])
+  new TestAccessHost(fs.getModulePath(), [configOptions.typeshedPath + '/stdlib', configOptions.typeshedPath + '/stub'])
 );
 const program = new Program(importResolver, configOptions);
 program.setTrackedFiles([FILE_PATH]);

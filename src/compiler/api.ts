@@ -136,6 +136,6 @@ export enum DeclarationType {
 }
 
 export const typesheds = import.meta.glob(
-  "/node_modules/pyright/dist/typeshed-fallback/stdlib/*.pyi",
+  "/node_modules/pyright/dist/typeshed-fallback/**/*.pyi",
   { as: "raw" }
 );
