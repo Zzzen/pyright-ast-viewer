@@ -1,3 +1,4 @@
+import { ClassTypeFlags } from "@zzzen/pyright-internal/dist/analyzer/types";
 import { JSONTree } from "react-json-tree";
 import {
   isExpressionNode,
@@ -7,8 +8,10 @@ import {
   TypeFlags,
   SymbolFlags,
   DeclarationType,
+  FunctionTypeFlags,
 } from "../compiler/api";
 import { AppState } from "../state";
+import { get } from 'lodash-es'
 
 const theme = {
   scheme: "monokai",
@@ -75,22 +78,19 @@ export default function PropertiesViewer() {
             return TypeCategory[val];
           }
           if (keypaths[0] === "flags" && typeof val === "number") {
+            if (type && keypaths[1] === 'details') {
+              const category = get(type, keypaths.slice(2).reverse().concat(['category']).join('.'))
+              if (category === TypeCategory.Class) {
+                return printFlags(val, ClassTypeFlags);
+              }
+              else if (category === TypeCategory.Function) {
+                return printFlags(val, FunctionTypeFlags)
+              }
+            }
             if (val === 0) {
               return "None";
             }
-            const bits = val.toString(2) as string;
-            const str = bits
-              .split("")
-              .reverse()
-              .map((bit, i) => {
-                if (bit === "0") {
-                  return "";
-                }
-                return TypeFlags[1 << i];
-              })
-              .filter(Boolean)
-              .join("|");
-            return val + "(" + str + ")";
+            return printFlags(val, TypeFlags);
           }
           return str;
         }}

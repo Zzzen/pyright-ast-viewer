@@ -1,9 +1,6 @@
 import { useRef, useState } from "react";
 import {
-  combinePaths,
   normalizeSlashes,
-  sitePackages,
-  lib,
   TestFileSystem,
   PyrightFileSystem,
   ConfigOptions,
@@ -45,10 +42,6 @@ foo = Foo("")
 foo.str
 `;
 
-// console.log(process.execArgv.join())
-const libraryRoot = combinePaths(normalizeSlashes("/"), lib, sitePackages);
-
-console.log(libraryRoot);
 const tfs = new TestFileSystem(false, {
   files: {
     ...typesheds,
