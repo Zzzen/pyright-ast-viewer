@@ -20,10 +20,11 @@ import {
   type editor,
   type Range,
 } from "monaco-editor/esm/vs/editor/editor.api";
+import { getUrlCode, updateUrl } from "./utils";
 
 const FILE_PATH = "/t.py";
 
-const defaultCode = `
+const defaultCode = getUrlCode() || `
 def f(a = 1):
   return a
 f(1)
@@ -145,6 +146,8 @@ export function useAppState() {
         program,
         diagnostics,
       }));
+
+      updateUrl(code);
     },
     selectNode(node: ParseNode) {
       setState((x) => {

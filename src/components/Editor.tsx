@@ -48,6 +48,7 @@ function EditorWrapper() {
   function handleEditorDidMount(editor: editor.IStandaloneCodeEditor) {
     editorRef.current = editor;
     handleEditorInit(editor);
+    handleCodeChange(state.code)
     editor.onMouseDown((e) => {
       if (!e.target.range) {
         return;
