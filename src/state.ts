@@ -52,6 +52,7 @@ const tfs = new TestFileSystem(false, {
 const fs = new PyrightFileSystem(tfs);
 
 const configOptions = new ConfigOptions(normalizeSlashes("/"));
+configOptions.diagnosticRuleSet = ConfigOptions.getDiagnosticRuleSet('strict');
 configOptions.typeshedPath = normalizeSlashes(
   "/node_modules/pyright/dist/typeshed-fallback"
 );
